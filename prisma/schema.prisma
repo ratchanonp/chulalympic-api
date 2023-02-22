@@ -1,0 +1,119 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Venue {
+  id    Int    @id @default(autoincrement())
+  name  String
+  grame Game[]
+}
+
+model Faculty {
+  id          Int           @id @default(autoincrement())
+  name        String
+  participant Participant[]
+}
+
+model Sport {
+  code     String          @unique
+  name     String
+  game     Game[]
+  category SportCategory[]
+}
+
+model SportCategory {
+  code      String @unique
+  name      String
+  sportCode String
+  game      Game[]
+  sport     Sport  @relation(fields: [sportCode], references: [code], onDelete: Cascade)
+}
+
+model Game {
+  id                String        @id
+  venueId           Int
+  sportCode         String
+  sportCategoryCode String
+  createdAt         DateTime      @default(now())
+  end               DateTime?
+  reporterId        Int?
+  start             DateTime
+  status            GameStatus    @default(SCHEDULED)
+  type              GameType      @default(REGULAR)
+  updatedAt         DateTime      @updatedAt
+  reporter          User?         @relation(fields: [reporterId], references: [id])
+  sportCategory     SportCategory @relation(fields: [sportCategoryCode], references: [code])
+  sport             Sport         @relation(fields: [sportCode], references: [code])
+  venue             Venue         @relation(fields: [venueId], references: [id])
+  participant       Participant[]
+}
+
+model Participant {
+  facultyId Int
+  scoreType ScoreType? @default(POINT)
+  value     Int?       @default(0)
+  medal     Medal?
+  gameId    String
+  faculty   Faculty    @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  game      Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@id([gameId, facultyId])
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String
+  role      Role     @default(REPORTER)
+  createdAt DateTime @default(now())
+  report    Game[]
+}
+
+view MedalCount {
+  id     Int    @id
+  name   String
+  gold   Int
+  silver Int
+  bronze Int
+  Total  Int
+}
+
+enum Role {
+  ADMIN
+  REPORTER
+}
+
+enum ScoreType {
+  POINT
+  TIME
+  POSITION
+}
+
+enum GameStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETE
+  SCORED
+}
+
+enum GameType {
+  REGULAR
+  QUALIFYING
+  QUARTER_FINAL
+  SEMI_FINAL
+  FINAL
+}
+
+enum Medal {
+  Gold
+  Silver
+  Bronze
+  None
+}
