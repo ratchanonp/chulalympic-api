@@ -4,7 +4,7 @@ import { SportsService } from './sports.service';
 
 @Controller('sports')
 export class SportsController {
-  constructor(private readonly sportsService: SportsService) {}
+  constructor(private readonly sportsService: SportsService) { }
 
   @Get()
   findAll(@Query() query: any) {
@@ -27,8 +27,6 @@ export class SportsController {
 
   @Get(':code')
   findOne(@Param('code') code: string) {
-    return this.sportsService.findOne({
-      code,
-    });
+    return this.sportsService.findOne(code);
   }
 }
