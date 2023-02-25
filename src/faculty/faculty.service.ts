@@ -6,7 +6,7 @@ import { UpdateFacultyDto } from './dto/update-faculty.dto';
 
 @Injectable()
 export class FacultyService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(createFacultyDto: CreateFacultyDto): Promise<Faculty> {
     return this.prisma.faculty.create({
@@ -16,6 +16,12 @@ export class FacultyService {
 
   async findAll(): Promise<Faculty[]> {
     return this.prisma.faculty.findMany();
+  }
+
+  async findOne(id: number): Promise<Faculty> {
+    return this.prisma.faculty.findUnique({
+      where: { id },
+    });
   }
 
   async update(
