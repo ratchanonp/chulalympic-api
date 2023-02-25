@@ -10,20 +10,22 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUser(
     username: string,
     password: string,
   ): Promise<UserWOCredential> {
     const user = await this.usersService.findOne(username);
+
+    if (!user) return null;
+
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (user && isMatch) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user;
-      return result;
-    }
+    if (!isMatch) return null;
+
+    const { password: _, ...result } = user;
+    return result;
 
     return null;
   }
