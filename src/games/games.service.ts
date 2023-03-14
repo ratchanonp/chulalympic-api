@@ -155,16 +155,19 @@ export class GamesService {
   }
 
   async getDates(): Promise<string[]> {
-    const games = await this.prisma.game.findMany({
-      distinct: ['start'],
+
+    // Get Distinct Dates from start
+    const dates = await this.prisma.game.findMany({
       select: {
         start: true,
       },
       orderBy: {
         start: 'asc',
       },
+      distinct: ['start'],
     });
 
-    return games.map((game) => game.start.toISOString().split('T')[0]);
+    const date = dates.map((date) => date.start.toISOString().split('T')[0]);
+    return [...new Set(date)];
   }
 }

@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  Query
+  Query,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CreateGameDto } from './dto/create-game.dto';
@@ -17,7 +17,7 @@ import { GameFilter } from './interface/game.interface';
 
 @Controller('games')
 export class GamesController {
-  constructor(private readonly gamesService: GamesService) { }
+  constructor(private readonly gamesService: GamesService) {}
 
   @Post()
   create(@Body() createGameDto: CreateGameDto) {
@@ -26,17 +26,15 @@ export class GamesController {
 
   @Get()
   findAll(@Query() query: any) {
-
     const where: Prisma.GameWhereInput = {};
 
     console.log(query);
 
-    const { venueId, sportCode, sportCategoryCode, facultyId } = query;
+    const { venueId, sportCode, sportCategoryCode, facultyId, date } = query;
     const { skip, take } = query;
 
     let venueIdArray = venueId ? venueId.split(',') : venueId;
     if (venueIdArray) venueIdArray = venueIdArray?.map((id) => Number(id));
-
 
     const sportCodeArray = sportCode ? sportCode.split(',') : sportCode;
     const sportCategoryCodeArray = sportCategoryCode
@@ -44,14 +42,8 @@ export class GamesController {
       : sportCategoryCode;
 
     let facultyIdArray = facultyId ? facultyId.split(',') : facultyId;
-    if (facultyIdArray) facultyIdArray = facultyIdArray?.map((id) => Number(id));
-
-    console.log({
-      venueIdArray,
-      sportCodeArray,
-      sportCategoryCodeArray,
-      facultyIdArray,
-    });
+    if (facultyIdArray)
+      facultyIdArray = facultyIdArray?.map((id) => Number(id));
 
     if (venueIdArray) where.venueId = { in: venueIdArray };
     if (sportCodeArray) where.sportCode = { in: sportCodeArray };
@@ -66,6 +58,20 @@ export class GamesController {
         },
       };
     }
+
+    // date is ISO string remove time
+    const todayFromDate = new Date(date);
+    todayFromDate.setHours(0, 0, 0, 0);
+    const tommorowFromDate = new Date(date);
+    tommorowFromDate.setHours(0, 0, 0, 0);
+    tommorowFromDate.setDate(tommorowFromDate.getDate() + 1);
+
+    where.start = date
+      ? {
+          gte: todayFromDate,
+          lt: tommorowFromDate,
+        }
+      : undefined;
 
     console.log(where);
 
