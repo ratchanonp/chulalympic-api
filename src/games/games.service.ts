@@ -8,7 +8,7 @@ import { GameFilter } from './interface/game.interface';
 
 @Injectable()
 export class GamesService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createGameDto: CreateGameDto): Promise<Game> {
     const {
@@ -49,7 +49,10 @@ export class GamesService {
         },
         sportCategory: {
           connect: {
-            code: sportCategoryCode,
+            sportCode_code: {
+              sportCode: sportCode,
+              code: sportCategoryCode,
+            },
           },
         },
         participant: {
@@ -155,7 +158,6 @@ export class GamesService {
   }
 
   async getDates(): Promise<string[]> {
-
     // Get Distinct Dates from start
     const dates = await this.prisma.game.findMany({
       select: {

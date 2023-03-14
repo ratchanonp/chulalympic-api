@@ -28,7 +28,7 @@ model Sport {
 }
 
 model SportCategory {
-  code      String @unique
+  code      String
   name      String
   sportCode String
   game      Game[]
@@ -50,9 +50,9 @@ model Game {
   type              GameType      @default(REGULAR)
   updatedAt         DateTime      @updatedAt
   reporter          User?         @relation(fields: [reporterId], references: [id])
-  sportCategory     SportCategory @relation(fields: [sportCategoryCode], references: [code])
+  sportCategory     SportCategory @relation(fields: [sportCode, sportCategoryCode], references: [sportCode, code])
   sport             Sport         @relation(fields: [sportCode], references: [code])
-  venue             Venue         @relation(fields: [venueId], references: [id])
+  venue             Venue         @relation(fields: [venueId], references: [id], onDelete: Cascade)
   participant       Participant[]
 }
 
