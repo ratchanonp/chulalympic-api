@@ -153,4 +153,18 @@ export class GamesService {
       return await this.prisma.game.findUnique({ where: { id: id } });
     });
   }
+
+  async getDates(): Promise<string[]> {
+    const games = await this.prisma.game.findMany({
+      distinct: ['start'],
+      select: {
+        start: true,
+      },
+      orderBy: {
+        start: 'asc',
+      },
+    });
+
+    return games.map((game) => game.start.toISOString().split('T')[0]);
+  }
 }

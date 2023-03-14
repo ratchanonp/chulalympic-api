@@ -33,6 +33,8 @@ model SportCategory {
   sportCode String
   game      Game[]
   sport     Sport  @relation(fields: [sportCode], references: [code], onDelete: Cascade)
+
+  @@id([sportCode, code])
 }
 
 model Game {

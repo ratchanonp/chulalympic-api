@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { SportFilter } from './interface/sport.interface';
 import { SportsService } from './sports.service';
 
@@ -28,5 +28,15 @@ export class SportsController {
   @Get(':code')
   findOne(@Param('code') code: string) {
     return this.sportsService.findOne(code);
+  }
+
+  @Get(':code/categories')
+  findCategories(@Param('code') code: string) {
+    return this.sportsService.findCategories(code);
+  }
+
+  @Post(':code/categories')
+  createCategory(@Param('code') code: string, @Body() data: any) {
+    return this.sportsService.createCategory(code, data);
   }
 }

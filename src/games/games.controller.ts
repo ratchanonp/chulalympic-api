@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  Query,
+  Query
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CreateGameDto } from './dto/create-game.dto';
@@ -17,7 +17,7 @@ import { GameFilter } from './interface/game.interface';
 
 @Controller('games')
 export class GamesController {
-  constructor(private readonly gamesService: GamesService) {}
+  constructor(private readonly gamesService: GamesService) { }
 
   @Post()
   create(@Body() createGameDto: CreateGameDto) {
@@ -26,17 +26,32 @@ export class GamesController {
 
   @Get()
   findAll(@Query() query: any) {
+
     const where: Prisma.GameWhereInput = {};
+
+    console.log(query);
 
     const { venueId, sportCode, sportCategoryCode, facultyId } = query;
     const { skip, take } = query;
 
-    const venueIdArray = venueId ? venueId.split(',') : venueId;
+    let venueIdArray = venueId ? venueId.split(',') : venueId;
+    if (venueIdArray) venueIdArray = venueIdArray?.map((id) => Number(id));
+
+
     const sportCodeArray = sportCode ? sportCode.split(',') : sportCode;
     const sportCategoryCodeArray = sportCategoryCode
       ? sportCategoryCode.split(',')
       : sportCategoryCode;
-    const facultyIdArray = facultyId ? facultyId.split(',') : facultyId;
+
+    let facultyIdArray = facultyId ? facultyId.split(',') : facultyId;
+    if (facultyIdArray) facultyIdArray = facultyIdArray?.map((id) => Number(id));
+
+    console.log({
+      venueIdArray,
+      sportCodeArray,
+      sportCategoryCodeArray,
+      facultyIdArray,
+    });
 
     if (venueIdArray) where.venueId = { in: venueIdArray };
     if (sportCodeArray) where.sportCode = { in: sportCodeArray };
@@ -52,6 +67,8 @@ export class GamesController {
       };
     }
 
+    console.log(where);
+
     const filter: GameFilter = {
       skip: Number(skip) || 0,
       take: Math.min(Number(take) || 30, 30),
@@ -59,6 +76,11 @@ export class GamesController {
     };
 
     return this.gamesService.findAll(filter);
+  }
+
+  @Get('dates')
+  getDates() {
+    return this.gamesService.getDates();
   }
 
   @Post(':id/score')
