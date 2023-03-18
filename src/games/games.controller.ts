@@ -77,7 +77,7 @@ export class GamesController {
 
     const filter: GameFilter = {
       skip: Number(skip) || 0,
-      take: Math.min(Number(take) || 30, 30),
+      // take: Math.min(Number(take) || 30, 30),
       where,
     };
 

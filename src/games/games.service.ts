@@ -8,7 +8,7 @@ import { GameFilter } from './interface/game.interface';
 
 @Injectable()
 export class GamesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(createGameDto: CreateGameDto): Promise<Game> {
     const {
@@ -107,9 +107,29 @@ export class GamesService {
   }
 
   async update(id: string, updateGameDto: UpdateGameDto): Promise<Game> {
+
+    const { participants, ...data } = updateGameDto;
+
     return this.prisma.game.update({
       where: { id: id },
-      data: updateGameDto,
+      data: {
+        ...data,
+        participant: {
+          upsert: participants.map((participant) => ({
+            where: {
+              gameId_facultyId: {
+                gameId: id,
+                facultyId: participant.facultyId,
+              },
+            },
+            create: participant,
+            update: participant,
+          })),
+        },
+      },
+      include: {
+        participant: true,
+      },
     });
   }
 
