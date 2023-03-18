@@ -11,7 +11,6 @@ import {
 import { Prisma } from '@prisma/client';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
-import { UpdateScoreDTO } from './dto/update-score.dto';
 import { GamesService } from './games.service';
 import { GameFilter } from './interface/game.interface';
 
@@ -89,10 +88,10 @@ export class GamesController {
     return this.gamesService.getDates();
   }
 
-  @Post(':id/score')
-  updateScore(@Param('id') id: string, @Body() updateScoreDto: UpdateScoreDTO) {
-    return this.gamesService.scored(id, updateScoreDto);
-  }
+  // @Post(':id/score')
+  // updateScore(@Param('id') id: string, @Body() updateScoreDto: UpdateScoreDTO) {
+  //   return this.gamesService.scored(id, updateScoreDto);
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

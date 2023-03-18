@@ -3,12 +3,11 @@ import { Game } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
-import { UpdateScoreDTO } from './dto/update-score.dto';
 import { GameFilter } from './interface/game.interface';
 
 @Injectable()
 export class GamesService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createGameDto: CreateGameDto): Promise<Game> {
     const {
@@ -107,30 +106,77 @@ export class GamesService {
   }
 
   async update(id: string, updateGameDto: UpdateGameDto): Promise<Game> {
-
     const { participants, ...data } = updateGameDto;
 
-    return this.prisma.game.update({
+    const createParticipant = participants
+      .filter((participant) => !participant.id)
+      .map((participant) => ({
+        ...participant,
+        gameId: id,
+      }));
+    const updateParticipant = participants
+      .filter((participant) => participant.id)
+      .map((participant) => ({ ...participant, gameId: id }));
+
+    const game = await this.prisma.game.findUnique({
       where: { id: id },
-      data: {
-        ...data,
-        participant: {
-          upsert: participants.map((participant) => ({
-            where: {
-              gameId_facultyId: {
-                gameId: id,
-                facultyId: participant.facultyId,
+      include: { participant: true },
+    });
+
+    const deleteParticipant = game.participant.filter(
+      (participant) => !participants.find((p) => p.id === participant.id),
+    );
+
+    await this.prisma.$transaction(async () => {
+      // Update Game
+      await this.prisma.game.update({ where: { id: id }, data: data });
+
+      // Create Participant
+      if (createParticipant.length > 0) {
+        createParticipant.forEach(async (participant) => {
+          await this.prisma.participant.create({
+            data: {
+              scoreType: participant.scoreType,
+              value: participant.value,
+              medal: participant.medal,
+              faculty: {
+                connect: {
+                  id: participant.facultyId,
+                },
+              },
+              game: {
+                connect: { id: id },
               },
             },
-            create: participant,
-            update: participant,
-          })),
-        },
-      },
-      include: {
-        participant: true,
-      },
+          });
+        });
+      }
+
+      // Update Participant
+      if (updateParticipant.length > 0) {
+        updateParticipant.forEach(async (participant) => {
+          await this.prisma.participant.update({
+            where: {
+              id: participant.id,
+            },
+            data: participant,
+          });
+        });
+      }
+
+      // Delete Participant
+      if (deleteParticipant.length > 0) {
+        deleteParticipant.forEach(async (participant) => {
+          await this.prisma.participant.delete({
+            where: {
+              id: participant.id,
+            },
+          });
+        });
+      }
     });
+
+    return this.prisma.game.findUniqueOrThrow({ where: { id: id } });
   }
 
   async remove(id: string): Promise<Game> {
@@ -139,43 +185,43 @@ export class GamesService {
     });
   }
 
-  async scored(id: string, updateScoreDTO: UpdateScoreDTO): Promise<Game> {
-    const { participants } = updateScoreDTO;
+  // async scored(id: string, updateScoreDTO: UpdateScoreDTO): Promise<Game> {
+  //   const { participants } = updateScoreDTO;
 
-    const game = await this.prisma.game.findUnique({ where: { id: id } });
-    if (!game) {
-      throw new Error('Game not found');
-    }
+  //   const game = await this.prisma.game.findUnique({ where: { id: id } });
+  //   if (!game) {
+  //     throw new Error('Game not found');
+  //   }
 
-    return this.prisma.$transaction(async () => {
-      //Update Game Status
-      await this.prisma.game.update({
-        where: { id: id },
-        data: {
-          status: 'SCORED',
-        },
-      });
+  //   return this.prisma.$transaction(async () => {
+  //     //Update Game Status
+  //     await this.prisma.game.update({
+  //       where: { id: id },
+  //       data: {
+  //         status: 'SCORED',
+  //       },
+  //     });
 
-      //Update Each Participant Score
-      participants.forEach(async ({ facultyId, scoreType, value, medal }) => {
-        await this.prisma.participant.update({
-          where: {
-            gameId_facultyId: {
-              gameId: id,
-              facultyId: facultyId,
-            },
-          },
-          data: {
-            scoreType,
-            value,
-            medal,
-          },
-        });
-      });
+  //     //Update Each Participant Score
+  //     participants.forEach(async ({ facultyId, scoreType, value, medal }) => {
+  //       await this.prisma.participant.update({
+  //         where: {
+  //           gameId_facultyId: {
+  //             gameId: id,
+  //             facultyId: facultyId,
+  //           },
+  //         },
+  //         data: {
+  //           scoreType,
+  //           value,
+  //           medal,
+  //         },
+  //       });
+  //     });
 
-      return await this.prisma.game.findUnique({ where: { id: id } });
-    });
-  }
+  //     return await this.prisma.game.findUnique({ where: { id: id } });
+  //   });
+  // }
 
   async getDates(): Promise<string[]> {
     // Get Distinct Dates from start

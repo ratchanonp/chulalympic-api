@@ -57,6 +57,7 @@ model Game {
 }
 
 model Participant {
+  id        Int        @id @default(autoincrement())
   facultyId Int
   scoreType ScoreType? @default(POINT)
   value     Int?       @default(0)
@@ -64,8 +65,6 @@ model Participant {
   gameId    String
   faculty   Faculty    @relation(fields: [facultyId], references: [id], onDelete: Cascade)
   game      Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
-
-  @@id([gameId, facultyId])
 }
 
 model User {

@@ -8,7 +8,6 @@ import { Configuration } from './config/configuration';
 import { PrismaClientExceptionFilter } from './prisma/prisma-client-exception.filter';
 
 async function bootstrap() {
-
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get<ConfigService<Configuration>>(ConfigService);
 
@@ -25,7 +24,7 @@ async function bootstrap() {
 
   // COR
   app.enableCors({
-    origin: configService.get<string>('origin'),
+    origin: '*',
   });
 
   const port = configService.get<number>('port');
