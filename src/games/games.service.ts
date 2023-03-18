@@ -70,10 +70,7 @@ export class GamesService {
   async findAll(filter: GameFilter): Promise<Game[]> {
     const games = await this.prisma.game.findMany({
       ...filter,
-      orderBy: {
-        start: 'asc',
-        id: 'asc',
-      },
+      orderBy: [{ start: 'asc' }, { id: 'asc' }], // sort by start date
       include: {
         sport: true,
         sportCategory: true,
