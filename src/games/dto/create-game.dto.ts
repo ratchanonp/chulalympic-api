@@ -7,7 +7,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  ValidateNested,
+  ValidateNested
 } from 'class-validator';
 
 export class CreateGameDto {
@@ -43,6 +43,10 @@ export class CreateGameDto {
   @Type(() => Participant)
   @ValidateNested()
   participants: Participant[];
+
+  @IsOptional()
+  @IsString()
+  note?: string;
 }
 
 export class Participant {

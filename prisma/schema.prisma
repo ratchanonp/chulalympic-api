@@ -54,6 +54,7 @@ model Game {
   sport             Sport         @relation(fields: [sportCode], references: [code])
   venue             Venue         @relation(fields: [venueId], references: [id], onDelete: Cascade)
   participant       Participant[]
+  note              String?
 }
 
 model Participant {
