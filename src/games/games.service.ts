@@ -7,7 +7,7 @@ import { GameFilter } from './interface/game.interface';
 
 @Injectable()
 export class GamesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(createGameDto: CreateGameDto): Promise<Game> {
     const {
@@ -72,6 +72,7 @@ export class GamesService {
       ...filter,
       orderBy: {
         start: 'asc',
+        id: 'asc',
       },
       include: {
         sport: true,
