@@ -7,7 +7,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  ValidateNested
+  ValidateNested,
 } from 'class-validator';
 
 export class CreateGameDto {
@@ -65,4 +65,8 @@ export class Participant {
   @IsOptional()
   @IsEnum(Medal)
   medal?: Medal;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
 }
