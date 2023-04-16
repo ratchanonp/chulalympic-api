@@ -4,9 +4,9 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
-  Query,
+  Put,
+  Query
 } from '@nestjs/common';
 import { CreateVenueDto } from './dto/create-venue.dto';
 import { UpdateVenueDto } from './dto/update-venue.dto';
@@ -15,7 +15,7 @@ import { VenuesService } from './venues.service';
 
 @Controller('venues')
 export class VenuesController {
-  constructor(private readonly venuesService: VenuesService) {}
+  constructor(private readonly venuesService: VenuesService) { }
 
   @Post()
   create(@Body() createVenueDto: CreateVenueDto) {
@@ -41,7 +41,7 @@ export class VenuesController {
     return this.venuesService.findAll(filter);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateVenueDto: UpdateVenueDto) {
     return this.venuesService.update(+id, updateVenueDto);
   }

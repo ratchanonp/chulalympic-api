@@ -4,10 +4,10 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
+  Put,
   Req,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserRequest } from '../auth/interface/auth.interface';
@@ -17,7 +17,7 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -33,7 +33,7 @@ export class UsersController {
   @Get('me')
   profile(@Req() req: UserRequest) {
     const { user } = req;
-    return this.usersService.findOne(user.username);
+    return this.usersService.findById(user.userId);
   }
 
   @Get(':username')
@@ -41,7 +41,7 @@ export class UsersController {
     return this.usersService.findOne(username);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }

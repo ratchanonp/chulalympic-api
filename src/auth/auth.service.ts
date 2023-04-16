@@ -26,8 +26,6 @@ export class AuthService {
 
     const { password: _, ...result } = user;
     return result;
-
-    return null;
   }
 
   async signin(user: UserWOCredential): Promise<AuthResponse> {

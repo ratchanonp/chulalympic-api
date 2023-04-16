@@ -27,7 +27,6 @@ export class GamesController {
   findAll(@Query() query: any) {
     const where: Prisma.GameWhereInput = {};
 
-    console.log(query);
 
     const { venueId, sportCode, sportCategoryCode, facultyId, date } = query;
     const { skip, take } = query;
@@ -72,7 +71,6 @@ export class GamesController {
         }
       : undefined;
 
-    console.log(where);
 
     const filter: GameFilter = {
       skip: Number(skip) || 0,

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { configuration } from 'src/config/configuration';
+import { ParticipantsModule } from 'src/participants/participants.module';
 import { AuthModule } from '../auth/auth.module';
 import { FacultyModule } from '../faculty/faculty.module';
 import { GamesModule } from '../games/games.module';
@@ -20,6 +21,7 @@ import { AppService } from './app.service';
     FacultyModule,
     VenuesModule,
     GamesModule,
+    ParticipantsModule,
     MedalsModule,
     UsersModule,
     AuthModule,
@@ -32,4 +34,4 @@ import { AppService } from './app.service';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

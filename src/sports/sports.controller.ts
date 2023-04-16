@@ -1,10 +1,21 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { CreateSportDto } from './dto/create-sport.dto';
+import { UpdateSportDto } from './dto/update-sport.dto';
 import { SportFilter } from './interface/sport.interface';
 import { SportsService } from './sports.service';
 
 @Controller('sports')
 export class SportsController {
-  constructor(private readonly sportsService: SportsService) { }
+  constructor(private readonly sportsService: SportsService) {}
 
   @Get()
   findAll(@Query() query: any) {
@@ -23,6 +34,26 @@ export class SportsController {
     };
 
     return this.sportsService.findAll(filter);
+  }
+
+  @Post()
+  create(@Body() data: CreateSportDto) {
+    return this.sportsService.create(data);
+  }
+
+  @Put(':code')
+  update(@Param('code') code: string, @Body() data: UpdateSportDto) {
+    return this.sportsService.update(code, data);
+  }
+
+  @Delete(':code')
+  delete(@Param('code') code: string) {
+    return this.sportsService.delete(code);
+  }
+
+  @Post('/categories')
+  createCategoryV2(@Body() data: any) {
+    return this.sportsService.createCategoryV2(data);
   }
 
   @Get(':code')

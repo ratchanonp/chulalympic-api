@@ -28,6 +28,13 @@ export class UsersService {
     return await this.prisma.user.findMany({ select: selectWithOutCredential });
   }
 
+  async findById(id: number): Promise<UserWOCredential> {
+    return await this.prisma.user.findUnique({
+      select: selectWithOutCredential,
+      where: { id },
+    });
+  }
+
   async findOne(username: string): Promise<User> {
     return await this.prisma.user.findUnique({
       where: {
@@ -40,6 +47,12 @@ export class UsersService {
     id: number,
     updateUserDto: UpdateUserDto,
   ): Promise<UserWOCredential> {
+    if (updateUserDto.password) {
+      const { password } = updateUserDto;
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateUserDto.password = hashedPassword;
+    }
+
     return this.prisma.user.update({
       where: {
         id,

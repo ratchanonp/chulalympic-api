@@ -15,7 +15,9 @@ export class FacultyService {
   }
 
   async findAll(): Promise<Faculty[]> {
-    return this.prisma.faculty.findMany();
+    return this.prisma.faculty.findMany({
+      orderBy: { id: 'asc' },
+    });
   }
 
   async findOne(id: number): Promise<Faculty> {
