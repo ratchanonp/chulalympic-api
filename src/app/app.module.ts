@@ -11,6 +11,7 @@ import { SportsModule } from '../sports/sports.module';
 import { UsersModule } from '../users/users.module';
 import { VenuesModule } from '../venues/venues.module';
 
+import { DashboardModule } from 'src/dashboard/dashboard.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -25,6 +26,7 @@ import { AppService } from './app.service';
     MedalsModule,
     UsersModule,
     AuthModule,
+    DashboardModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
