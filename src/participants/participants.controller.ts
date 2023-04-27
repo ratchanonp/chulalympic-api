@@ -1,6 +1,6 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { ParticipantsService } from './participants.service';
+import { Body, Controller, Post } from '@nestjs/common';
 import { CreateParticipantDto } from './dto/create-participant.dto';
+import { ParticipantsService } from './participants.service';
 
 @Controller('participants')
 export class ParticipantsController {

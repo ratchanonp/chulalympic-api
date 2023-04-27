@@ -6,6 +6,11 @@ import { CreateParticipantDto } from './dto/create-participant.dto';
 export class ParticipantsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * @deprecated
+   * @param data
+   * @returns
+   */
   async create(data: CreateParticipantDto) {
     return this.prisma.participant.create({
       data: {

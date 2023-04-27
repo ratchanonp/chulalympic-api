@@ -11,7 +11,7 @@ datasource db {
 model Venue {
   id    Int    @id @default(autoincrement())
   name  String
-  grame Game[]
+  game Game[]
 }
 
 model Faculty {
