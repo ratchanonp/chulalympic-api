@@ -40,16 +40,16 @@ export class CreateGameDto {
   type: GameType;
 
   @IsOptional()
-  @Type(() => Participant)
+  @Type(() => ParticipantDto)
   @ValidateNested()
-  participants: Participant[];
+  participants: ParticipantDto[];
 
   @IsOptional()
   @IsString()
   note?: string;
 }
 
-export class Participant {
+export class ParticipantDto {
   @IsNotEmpty()
   @IsNumber()
   facultyId: number;

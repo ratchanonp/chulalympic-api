@@ -71,3 +71,6 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+
+postgresql://postgres:jGcPl31qX8q{Rga-@localhost/?host=/cloudsql/chulalympic-backend:asia-southeast1:chulalympic-db
