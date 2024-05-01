@@ -6,7 +6,7 @@ import { UpdateSportDto } from './dto/update-sport.dto';
 
 @Injectable()
 export class SportsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) { }
 
   async createCategoryV2(data: SportCategory) {
     return this.prisma.sportCategory.create({

@@ -10,10 +10,10 @@ export class CreateSportDto {
   name: string;
 
   @IsArray()
-  category: SportCategory[];
+  category: SportCategoryDto[];
 }
 
-class SportCategory {
+class SportCategoryDto {
   @IsNotEmpty()
   @IsString()
   code: string;
